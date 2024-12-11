@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212; /* Fondo oscuro */
+            color: #ffffff; /* Texto blanco */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            margin-bottom: 20px;
+            text-align: center; /* Centrado */
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #00BFFF; /* Azul claro */
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            background-color: #1c1c1c; /* Fondo de las columnas */
+        }
+
+        .column {
+            flex: 1;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #rules-column {
+            text-align: left; /* Alineación a la izquierda para reglas */
+        }
+
+        #game-column {
+            text-align: center; /* Alineación centrada para el juego */
+        }
+
+        h2 {
+            color: #00BFFF; /* Azul claro */
+        }
+
+        #new-table-button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF; /* Azul */
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            margin-top: 20px;
+        }
+
+        #new-table-button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .available-tables {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .available-tables button {
+            width: 350px;
+            height: 50px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 5px;
+        }
+
+        .available-tables button:hover {
+            background-color: #0056b3;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center; /* Centrar el tablero */
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            background-color: #444; /* Fondo de celdas */
+            border: 2px solid #aaa;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .cell:hover {
+            background-color: #555;
+            transform: scale(1.05);
+        }
+
+        .cell.disabled {
+            pointer-events: none;
+            background-color: #888; /* Color de celdas deshabilitadas */
+        }
+
+        .cell.x {
+            color: red; /* Color para X */
+        }
+
+        .cell.o {
+            color: blue; /* Color para O */
+        }
+
+        #turn-indicator {
+            font-size: 1.5em;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        /* Estilo para las listas */
+        ul {
+            list-style-type: disc; /* Tipo de viñetas */
+            padding-left: 20px; /* Alineación de viñetas */
+        }
+
+        /* Responsivo */
+        @media (max-width: 600px) {
+            .game-board {
+                grid-template-columns: repeat(3, 80px);
+                grid-template-rows: repeat(3, 80px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>¡Tic-Tac-Toe!</h1>
+    </div>
+    <div class="container">
+        <div class="column" id="rules-column">
+            <h3>Reglas del Juego</h3>
+            <ul>
+                <li><strong>Objetivo:</strong> El objetivo es alinear tres de tus marcas en una fila.</li>
+                <li><strong>Formas de ganar:</strong> Un jugador gana si logra alinear tres de sus marcas en una fila, ya sea:
+                    <ul>
+                        <li>Horizontal (tres en una fila)</li>
+                        <li>Vertical (tres en una columna)</li>
+                        <li>Diagonal (de una esquina a la otra)</li>
+                    </ul>
+                </li>
+                <li><strong>Turnos:</strong> Los jugadores alternan turnos colocando su simbolo en una casilla vacia del tablero.</li>
+                <li><strong>Comienzo:</strong> Generalmente, el jugador que utiliza "X" inicia la partida.</li>
+                <li><strong>Fin del juego:</strong> El juego termina cuando un jugador gana o todas las casillas estan ocupadas, lo que resulta en un empate.</li>
+            </ul>
+        </div>
+
+
+
+        <div class="column" id="game-column">
+            <div id="turn-indicator"></div>
+            <button id="new-table-button">Crear nueva mesa</button>
+            <h2 id="available-tables-header">Mesas Disponibles:</h2> 
+            <div id="available-tables" class="available-tables"></div>
+
+            <div id="game-container" style="display: none;">
+                <h2 id="game-status">Juego en Progreso</h2>
+                <div class="game-board" id="game-board"></div>
+            </div>
+        </div>
+
+    </div>
+    <!-- <h2>Aquí va la frase</h2> -->
+
+    <script>
+        // Establecer la conexión con el servidor websocket
+        const socket = new WebSocket('ws://localhost:8765');
+
+        // Crear una nueva mesa enviando una solicitud al servidor
+        document.getElementById('new-table-button').onclick = () => {
+            socket.send('NEW_TABLE');
+        };
+
+        // Manejar mensajes recibidos del servidor
+        socket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+
+    if (data.tables) {
+        const tableContainer = document.querySelector('.available-tables');
+        tableContainer.innerHTML = '';  // Limpiar el contenido actual
+
+        data.tables.forEach(table => {
+            const tableItem = document.createElement('div');
+            let participantCount = table.players ? table.players.length : 0; // Contar jugadores
+            if (table.available && participantCount === 1) {
+                tableItem.innerHTML = `<button onclick="joinTable(${table.id})">Unirse Mesa ${table.id} (Jugador esperando)</button>`;
+            }else if (table.available) {
+                tableItem.innerHTML = `<button onclick="joinTable(${table.id})">Unirse Mesa ${table.id} </button>`;
+            }
+            tableContainer.appendChild(tableItem);
+        });
+    }
+
+    if (data.turn) {
+        document.getElementById('turn-indicator').textContent = `Turno de: ${data.turn}`;
+    }
+
+    if (data.error) {
+        alert(data.error);  // Mostrar un mensaje de alerta con el error
+    }
+
+    if (data.winner) {
+        alert(`Game Over! ${data.winner}`);  // Mostrar mensaje de ganador o empate
+    }
+
+    if (data.board) {
+        document.getElementById('game-container').style.display = 'block'; // Mostrar el tablero
+        document.getElementById('game-status').textContent = `Jugando en la mesa ${data.table_id}`; // Actualizar el mensaje
+
+        renderBoard(data.board, data.table_id); // Renderizar el tablero actualizado
+    }
+
+    // Mostrar mensaje de espera si es necesario
+    if (data.message) {
+        alert(data.message);  // Muestra el mensaje de espera
+    }
+};
+
+
+        // Enviar una solicitud para unirse a una mesa específica
+        function joinTable(tableId) {
+            socket.send(`JOIN_TABLE ${tableId}`);
+            // Ocultar mesas disponibles y el botón "New Table"
+            document.getElementById('available-tables-header').style.display = 'none';
+            document.getElementById('available-tables').style.display = 'none';
+            document.getElementById('new-table-button').style.display = 'none';
+        }
+
+        // Función para renderizar el tablero del juego dinámicamente
+        function renderBoard(board, table_id) {
+            const boardContainer = document.getElementById('game-board');
+            boardContainer.innerHTML = ''; // Limpiar el tablero existente
+
+            board.forEach((cell, index) => {
+                const cellDiv = document.createElement('div');
+                cellDiv.id = `cell-${index}`;
+                cellDiv.classList.add('cell');
+
+                // Agregar clase según el valor de la celda
+                if (cell === 'X') {
+                    cellDiv.classList.add('x');
+                } else if (cell === 'O') {
+                    cellDiv.classList.add('o');
+                }
+
+                if (cell !== ' ') {
+                    cellDiv.classList.add('disabled'); // Deshabilitar celdas que ya tienen un movimiento
+                }
+
+                cellDiv.textContent = cell; // Establecer el contenido de la celda (X, O o vacío)
+                cellDiv.onclick = () => {
+                    if (!cellDiv.classList.contains('disabled')) { // Validar si la celda está habilitada
+                        makeMove(index, table_id); // Agregar evento de clic para hacer un movimiento
+                    }
+                };
+                boardContainer.appendChild(cellDiv); // Añadir la celda al tablero
+            });
+        }
+
+        // Enviar el movimiento del jugador al servidor
+        function makeMove(index, table_id) {
+            socket.send(`MAKE_MOVE,${table_id},${index}`);
+        }
+    </script>
+</body>
+</html>
