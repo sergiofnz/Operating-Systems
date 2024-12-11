@@ -1,0 +1,1 @@
+This is an online Tic-Tac-Toe game using a python server and raw sockets connections to allow the users to play the game within different tables all managed by different threads in the server-side of the game application.
